@@ -25,4 +25,31 @@
 #ifndef __TEXTABLE_H__
 #define __TEXTABLE_H__
 
+#include <iostream>
+#include <vector>
+
+class Textable
+{
+public:
+    using RowNumber    = size_t;
+    using ColumnNumber = size_t;
+
+    template<typename T>
+    void addCell(RowNumber row, ColumnNumber column, T value);
+
+    template<typename T>
+    void addRow(RowNumber row, const T &rowData);
+
+    template<typename T>
+    void addColumn(ColumnNumber  column, const T &columnData);
+
+    friend std::ostream &operator<<(std::ostream &os, const Textable &table);
+
+private:
+    using Row = std::vector<std::string>;
+    using Table = std::vector<Row>;
+
+    Table m_table;
+};
+
 #endif // !__TEXTABLE_H__

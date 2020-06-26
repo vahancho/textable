@@ -14,6 +14,9 @@ add_executable(textable_test
 
 target_link_libraries(textable_test PRIVATE textable)
 
+# Includes
+target_include_directories(textable_test PRIVATE src)
+
 enable_testing()
 add_test(NAME Test COMMAND textable_test)
 

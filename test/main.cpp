@@ -22,7 +22,18 @@
 *  SOFTWARE.                                                                      *
 ***********************************************************************************/
 
+#include "textable.h"
+
 int main(int, char**)
 {
+    Textable textable;
+
+    textable.addCell(0, 0, 1);
+    textable.addCell(0, 1, 1.2);
+    textable.addCell(0, 2, "Cell text");
+
+    textable.addRow(1, std::vector<int>{ 0, 1, 2 });
+    textable.addColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
+
     return 0;
 }
