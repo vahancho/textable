@@ -23,17 +23,25 @@
 ***********************************************************************************/
 
 #include "textable.h"
+#include "textable.cpp"
+
+#include <cassert>
 
 int main(int, char**)
 {
     Textable textable;
 
-    textable.addCell(0, 0, 1);
-    textable.addCell(0, 1, 1.2);
-    textable.addCell(0, 2, "Cell text");
+    textable.setCell(0, 0, 1);
+    textable.setCell(0, 1, 1.2);
+    textable.setCell(0, 2, "Cell text");
+    assert(textable.rowCount() == 1);
+    assert(textable.columnCount() == 3);
 
-    textable.addRow(1, std::vector<int>{ 0, 1, 2 });
-    textable.addColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
+    textable.setRow(1, std::vector<int>{ 0, 1, 2 });
+    textable.setRow(2, std::vector<std::string>{ "first", "second", "third" });
+    textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
+
+    //std::cout << textable;
 
     return 0;
 }

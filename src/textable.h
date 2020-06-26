@@ -35,13 +35,17 @@ public:
     using ColumnNumber = size_t;
 
     template<typename T>
-    void addCell(RowNumber row, ColumnNumber column, T value);
+    void setCell(RowNumber row, ColumnNumber column, T value);
 
     template<typename T>
-    void addRow(RowNumber row, const T &rowData);
+    void setRow(RowNumber row, const T &rowData);
 
     template<typename T>
-    void addColumn(ColumnNumber  column, const T &columnData);
+    void setColumn(ColumnNumber column, const T &columnData);
+
+    RowNumber rowCount() const;
+    ColumnNumber columnCount() const;
+
 
     friend std::ostream &operator<<(std::ostream &os, const Textable &table);
 
