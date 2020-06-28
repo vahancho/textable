@@ -1,0 +1,18 @@
+dist: xenial
+sudo: require
+language: cpp
+compiler:
+  - gcc
+before_install:
+  #- pip install --user cpp-coveralls
+script:
+    #- g++ -std=c++11 -coverage -Isrc -Iinclude test/main.cpp -o test_app
+    #- ./test_app
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make
+    - ./textable_test
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  #- coveralls --verbose --exclude test
