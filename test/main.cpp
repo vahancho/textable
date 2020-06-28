@@ -38,10 +38,17 @@ int main(int, char**)
     assert(textable.columnCount() == 3);
 
     textable.setRow(1, std::vector<int>{ 0, 1, 2 });
-    textable.setRow(2, std::vector<std::string>{ "first", "second", "third" });
-    textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
+    assert(textable.rowCount() == 2);
 
-    //std::cout << textable;
+    textable.setRow(2, std::vector<std::string>{ "first", "second", "third" });
+    assert(textable.rowCount() == 3);
+
+    textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
+    assert(textable.columnCount() == 4);
+
+    textable.setCell(3, 1, "A Single Value");
+
+    std::cout << textable;
 
     return 0;
 }
