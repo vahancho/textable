@@ -27,6 +27,21 @@
 
 #include <cassert>
 
+struct TableObject
+{
+    float m_price{ 2.3f };
+    std::string m_title{ "price: " };
+
+    friend std::ostream &operator<<(std::ostream &os, const TableObject &table);
+};
+
+std::ostream &operator<<(std::ostream &os, const TableObject &table)
+{
+    os << table.m_title << table.m_price;
+    return os;
+}
+
+
 int main(int, char**)
 {
     Textable textable;
@@ -47,6 +62,16 @@ int main(int, char**)
     assert(textable.columnCount() == 4);
 
     textable.setCell(3, 1, "A Single Value");
+    assert(textable.rowCount() == 4);
+    assert(textable.columnCount() == 4);
+
+    textable.setRow(4, std::vector<bool>{ true, false });
+    assert(textable.rowCount() == 5);
+    assert(textable.columnCount() == 4);
+
+    textable.setRow(5, std::vector<TableObject>{ {}, {1.234f, "price: "}, {5.4321f, "price: "} });
+    assert(textable.rowCount() == 6);
+    assert(textable.columnCount() == 4);
 
     std::cout << textable;
 
