@@ -35,17 +35,16 @@ public:
     using ColumnNumber = size_t;
 
     template<typename T>
-    void setCell(RowNumber row, ColumnNumber column, T value);
+    void setCell(RowNumber row, ColumnNumber column, T && value);
 
     template<typename T>
-    void setRow(RowNumber row, const T &rowData);
+    void setRow(RowNumber row, T && rowData);
 
     template<typename T>
-    void setColumn(ColumnNumber column, const T &columnData);
+    void setColumn(ColumnNumber column, T && columnData);
 
     RowNumber rowCount() const;
     ColumnNumber columnCount() const;
-
 
     friend std::ostream &operator<<(std::ostream &os, const Textable &table);
 
@@ -57,3 +56,4 @@ private:
 };
 
 #endif // !__TEXTABLE_H__
+
