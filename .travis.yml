@@ -1,11 +1,11 @@
 dist: xenial
 sudo: require
 language: cpp
+os: linux
 compiler:
   - gcc
 script:
-    - cmake .
-    - make
+    - g++ -std=c++11 -coverage -Isrc -Iinclude test/main.cpp -o textable_test
     - ./textable_test
 after_success:
   - bash <(curl -s https://codecov.io/bash)
