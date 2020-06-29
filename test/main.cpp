@@ -29,8 +29,8 @@
 
 struct TableObject
 {
-    float m_price{ 2.3f };
-    std::string m_title{ "price: " };
+    float m_price;
+    std::string m_title;
 
     friend std::ostream &operator<<(std::ostream &os, const TableObject &table);
 };
@@ -69,7 +69,7 @@ int main(int, char**)
     assert(textable.rowCount() == 5);
     assert(textable.columnCount() == 4);
 
-    textable.setRow(5, std::vector<TableObject>{ {}, {1.234f, "price: "}, {5.4321f, "price: "} });
+    textable.setRow(5, std::vector<TableObject>{ {1.80f, "height: "}, {1.234f, "price: "}, {5.4321f, "length: "} });
     assert(textable.rowCount() == 6);
     assert(textable.columnCount() == 4);
 
