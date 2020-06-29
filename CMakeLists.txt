@@ -19,8 +19,18 @@ target_link_libraries(textable_test PRIVATE textable)
 target_include_directories(textable_test PRIVATE src)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    # The test application also need to be compiled with the same flags.
-    target_compile_options(textable_test INTERFACE LINK_FLAGS --coverage)
+    # Add required flags (GCC & LLVM/Clang)
+    target_compile_options(textable_test INTERFACE
+        -O0        # no optimization
+        -g         # generate debug info
+        --coverage # sets all required flags
+    )
+
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+        target_link_options(textable_test INTERFACE --coverage)
+    else()
+        target_link_libraries(textable_test INTERFACE --coverage)
+    endif()
 endif()
 
 enable_testing()
