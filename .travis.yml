@@ -4,9 +4,7 @@ language: cpp
 compiler:
   - gcc
 script:
-    - mkdir build
-    - cd build
-    - cmake ..
+    - cmake .
     - make
     - ./textable_test
 after_success:
