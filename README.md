@@ -23,7 +23,7 @@ No installation required. Just compile */src/textable.h(.cpp)* in your project a
 
 ## Prerequisites
 
-No special requirements except *C++11* compliant compiler. The class is tested with *gcc 5.4.0* and *MSVC 15.0* (Visual Studio 2017).
+No special requirements except *C++11* compliant compiler. The class is tested with *gcc 4.8.4* and *MSVC 15.0* (Visual Studio 2017).
 For more details see the CI badges (*Travis CI & AppVeyor CI*).
 
 ## Generated Table Examples
