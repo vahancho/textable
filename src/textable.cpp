@@ -61,6 +61,16 @@ void Textable::setRow(RowNumber row, const Textable::Row &rowData)
     m_table.at(row) = rowData;
 }
 
+// The specialization for Taxtable::Row data. We don't need to perform values conversion.
+template<>
+void Textable::setRow(RowNumber row, Textable::Row && rowData)
+{
+    if (row + 1 > rowCount()) {
+        m_table.resize(row + 1);
+    }
+    m_table.at(row) = rowData;
+}
+
 template<typename T>
 void Textable::setRow(RowNumber row, T && rowData)
 {
