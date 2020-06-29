@@ -1,4 +1,4 @@
-dist: xenial
+dist: trusty
 sudo: require
 language: cpp
 os: linux
