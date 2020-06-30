@@ -59,6 +59,7 @@ To add a single rows in one go:
 Textable textable;
 textable.setRow(0, std::vector<int>{ 0, 1, 2 });
 textable.setRow(1, std::vector<std::string>{ "first", "second", "third" });
+textable.setRow(2, 1, 2.2f, 3.3, "Five days");
 ```
 
 To set a column values in one go
@@ -66,6 +67,7 @@ To set a column values in one go
 Textable textable;
 textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
 textable.setColumn(4, std::vector<bool>{ true, false });
+textable.setColumn(5, 11, 2.22, 3.0f, "Apple");
 ```
 
 Usage of a custom type as a cell data
