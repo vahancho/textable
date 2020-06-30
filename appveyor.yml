@@ -34,4 +34,4 @@ build_script:
 
 test_script:
     - cd C:\projects\textable\build
-    - textable_test.exe
+    - ctest -VV
