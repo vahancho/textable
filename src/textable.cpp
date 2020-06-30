@@ -27,6 +27,10 @@
 #include <algorithm>
 #include <sstream>
 #include <cassert>
+#include <tuple>
+
+static Textable::ColumnNumber s_currentColumn = {};
+static Textable::RowNumber s_currentRow = {};
 
 template<typename T>
 std::string toString(T && value)
@@ -53,7 +57,7 @@ void Textable::setCell(RowNumber row, ColumnNumber column, T && value)
 
 // The specialization for Taxtable::Row data. We don't need to perform values conversion.
 template<>
-void Textable::setRow(RowNumber row, const Textable::Row &rowData)
+inline void Textable::setRow(RowNumber row, Textable::Row && rowData)
 {
     if (row + 1 > rowCount()) {
         m_table.resize(row + 1);
@@ -61,17 +65,7 @@ void Textable::setRow(RowNumber row, const Textable::Row &rowData)
     m_table.at(row) = rowData;
 }
 
-// The specialization for Taxtable::Row data. We don't need to perform values conversion.
-template<>
-void Textable::setRow(RowNumber row, Textable::Row && rowData)
-{
-    if (row + 1 > rowCount()) {
-        m_table.resize(row + 1);
-    }
-    m_table.at(row) = rowData;
-}
-
-template<typename T>
+template<typename T, typename U>
 void Textable::setRow(RowNumber row, T && rowData)
 {
     if (row + 1 > rowCount()) {
@@ -88,7 +82,41 @@ void Textable::setRow(RowNumber row, T && rowData)
     m_table.at(row) = newRow;
 }
 
-template<typename T>
+template <typename T>
+void Textable::setRow(T)
+{
+    // Do nothing.
+}
+
+template<typename Value, typename... Ts>
+void Textable::setRow(RowNumber row, Value && value, Ts &&... restValues)
+{
+    setCell(row, s_currentColumn++, std::forward<Value>(value));
+    // The recursive call.
+    setRow(row, std::forward<Ts>(restValues)...);
+
+    // Reset the counter.
+    s_currentColumn = {};
+}
+
+template<typename Value, typename... Ts>
+void Textable::setColumn(ColumnNumber column, Value && value, Ts &&... restValues)
+{
+    setCell(s_currentRow++, column, std::forward<Value>(value));
+    // The recursive call.
+    setColumn(column, std::forward<Ts>(restValues)...);
+
+    // Reset the counter.
+    s_currentRow = {};
+}
+
+template <typename T>
+void Textable::setColumn(T)
+{
+    // Do nothing.
+}
+
+template<typename T, typename U>
 void Textable::setColumn(ColumnNumber column, T && columnData)
 {
     if (columnData.size() > rowCount()) {

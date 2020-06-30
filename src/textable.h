@@ -33,6 +33,14 @@
     A text table represents a table-like structure that can be streamed out as
     a plain text. A table has cells that hold string values, each of which can be referred by
     a row and column numbers.
+
+    The process of the text table generation is simple and intuitive.
+    You create an instance of the `Textable` class and populate it with your data.
+    You may add data in any order you want - `Textable` will handle it.
+    By default all cell content is center aligned. A table can be output to a
+    character stream.
+
+    No special requirements except C++11 compliant compiler.
 */
 class Textable
 {
@@ -54,22 +62,52 @@ public:
     //! Sets a complete row values.
     /*!
         Allows to set up a complete row at once. The \p rowData is a container
-        of cell values.
+        of the cell values. Normally it should be one of the standard container types
+        like std::vector.
         \param row     The row number
         \param rowData A container whose elements should be convertible to string.
+        \example
+            Textable textable;
+            textable.setRow(1, std::vector<std::string>{ "first", "second", "third" });
     */
-    template<typename T>
+    template<typename T, typename U = std::decay_t<decltype(*begin(std::declval<T>()))>>
     void setRow(RowNumber row, T && rowData);
+
+    //! Populates a row with values of arbitrary types.
+    /*!
+        The number of the function arguments and their types is not defined.
+        \param row The row number
+        \example
+            Textable textable;
+            textable.setRow(7, 1, 2.2f, 3.3, "four");
+    */
+    template<typename Value, typename... Ts>
+    void setRow(RowNumber row, Value && value, Ts &&... restValues);
 
     //! Sets a complete column values.
     /*!
         Allows to set up a complete table column at once. The \p columnData is a container
-        of cell values.
+        of cell values. Normally it should be one of the standard container types
+        like std::vector.
         \param column     The column number
         \param columnData A container whose elements should be convertible to string.
+        \example
+            Textable textable;
+            textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
     */
-    template<typename T>
+    template<typename T, typename U = std::decay_t<decltype(*begin(std::declval<T>()))>>
     void setColumn(ColumnNumber column, T && columnData);
+
+    //! Populates a column with values of arbitrary types.
+    /*!
+        The number of the function arguments and their types is not defined.
+        \param column The column number
+        \example
+            Textable textable;
+            textable.setColumn(12, 1, 2.2f, 3.3, "four");
+    */
+    template<typename Value, typename... Ts>
+    void setColumn(ColumnNumber column, Value && value, Ts &&... restValues);
 
     //! Returns the number of rows of the table.
     RowNumber rowCount() const;
@@ -80,6 +118,14 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Textable &table);
 
 private:
+    /// Implements the base case for setRow() variadic function template recursion.
+    template <typename T>
+    void setRow(T);
+
+    /// Implements the base case for setColumn() variadic function template recursion.
+    template <typename T>
+    void setColumn(T);
+
     using Row = std::vector<std::string>;
     using Table = std::vector<Row>;
 
