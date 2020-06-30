@@ -25,7 +25,37 @@
 #include "textable.h"
 #include "textable.cpp"
 
-#include <cassert>
+#define STRINGIFY_HELPER(x) #x
+#define STRINGIFY(x) STRINGIFY_HELPER(x)
+
+#define LOCATION std::string(__FILE__ ":" STRINGIFY(__LINE__))
+
+template<typename T,
+         typename std::enable_if <!std::is_floating_point<T>{}, int>::type = 0>
+bool compare(T && actual, T && expected)
+{
+    return actual == expected;
+}
+
+template<typename T,
+         typename std::enable_if <std::is_floating_point<T>{}, int>::type = 0>
+bool compare(T && actual, T && expected)
+{
+    static const T epsilon = 0.000001;
+    // A simple comparison of floating point numbers.
+    return std::abs(expected - actual) < epsilon;
+}
+
+template<typename T>
+void Test(T && actual, T && expected, std::string && location)
+{
+    if (compare(std::forward<T>(expected), std::forward<T>(actual))) {
+        std::cout << "OK:"     << '\t' << expected << " and " << actual << " are equal" << '\n';
+    } else {
+        std::cout << "FAILED:" << '\t' << "Expected " << expected << " but got " << actual
+                  << " : " << location << '\n';
+    }
+}
 
 struct TableObject
 {
@@ -49,44 +79,44 @@ int main(int, char**)
     textable.setCell(0, 0, 1);
     textable.setCell(0, 1, 1.2);
     textable.setCell(0, 2, "Cell text");
-    assert(textable.rowCount() == 1);
-    assert(textable.columnCount() == 3);
+    Test(textable.rowCount(), 1U, LOCATION);
+    Test(textable.columnCount(), 3U, LOCATION);
 
     textable.setRow(1, std::vector<int>{ 0, 1, 2 });
-    assert(textable.rowCount() == 2);
+    Test(textable.rowCount(), 2U, LOCATION);
 
     textable.setRow(2, std::vector<std::string>{ "first", "second", "third" });
-    assert(textable.rowCount() == 3);
+    Test(textable.rowCount(), 3U, LOCATION);
 
     std::vector<std::string> container{ "first", "second", "third" };
     textable.setRow(3, std::move(container));
-    assert(textable.rowCount() == 4);
+    Test(textable.rowCount(), 4U, LOCATION);
 
     textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
-    assert(textable.rowCount() == 4);
-    assert(textable.columnCount() == 4);
+    Test(textable.rowCount(), 4U, LOCATION);
+    Test(textable.columnCount(), 4U, LOCATION);
 
     textable.setCell(4, 1, "A Single Value");
-    assert(textable.rowCount() == 5);
-    assert(textable.columnCount() == 4);
+    Test(textable.rowCount(), 5U, LOCATION);
+    Test(textable.columnCount(), 4U, LOCATION);
 
     textable.setRow(5, std::vector<bool>{ true, false });
-    assert(textable.rowCount() == 6);
-    assert(textable.columnCount() == 4);
+    Test(textable.rowCount(), 6U, LOCATION);
+    Test(textable.columnCount(), 4U, LOCATION);
 
     textable.setRow(6, std::vector<TableObject>{ {1.80f, "height: "},
                                                  {1.234f, "price: "},
                                                  {5.4321f, "length: "} });
-    assert(textable.rowCount() == 7);
-    assert(textable.columnCount() == 4);
+    Test(textable.rowCount(), 7U, LOCATION);
+    Test(textable.columnCount(), 4U, LOCATION);
 
     textable.setRow(7, 1, 2.2f, 3.3, "four", TableObject{ 12.29f, "Distance: " });
-    assert(textable.rowCount() == 8);
-    assert(textable.columnCount() == 5);
+    Test(textable.rowCount(), 8U, LOCATION);
+    Test(textable.columnCount(), 5U, LOCATION);
 
     textable.setColumn(4, 1, 2.2f, 3.3, 4.4, "five", TableObject{2.29f, "Distance: "});
-    assert(textable.rowCount() == 8);
-    assert(textable.columnCount() == 5);
+    Test(textable.rowCount(), 8U, LOCATION);
+    Test(textable.columnCount(), 5U, LOCATION);
 
     std::cout << textable;
 
