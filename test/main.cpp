@@ -58,20 +58,35 @@ int main(int, char**)
     textable.setRow(2, std::vector<std::string>{ "first", "second", "third" });
     assert(textable.rowCount() == 3);
 
-    textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
-    assert(textable.columnCount() == 4);
+    std::vector<std::string> container{ "first", "second", "third" };
+    textable.setRow(3, std::move(container));
+    assert(textable.rowCount() == 4);
 
-    textable.setCell(3, 1, "A Single Value");
+    textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
     assert(textable.rowCount() == 4);
     assert(textable.columnCount() == 4);
 
-    textable.setRow(4, std::vector<bool>{ true, false });
+    textable.setCell(4, 1, "A Single Value");
     assert(textable.rowCount() == 5);
     assert(textable.columnCount() == 4);
 
-    textable.setRow(5, std::vector<TableObject>{ {1.80f, "height: "}, {1.234f, "price: "}, {5.4321f, "length: "} });
+    textable.setRow(5, std::vector<bool>{ true, false });
     assert(textable.rowCount() == 6);
     assert(textable.columnCount() == 4);
+
+    textable.setRow(6, std::vector<TableObject>{ {1.80f, "height: "},
+                                                 {1.234f, "price: "},
+                                                 {5.4321f, "length: "} });
+    assert(textable.rowCount() == 7);
+    assert(textable.columnCount() == 4);
+
+    textable.setRow(7, 1, 2.2f, 3.3, "four", TableObject{ 12.29f, "Distance: " });
+    assert(textable.rowCount() == 8);
+    assert(textable.columnCount() == 5);
+
+    textable.setColumn(4, 1, 2.2f, 3.3, 4.4, "five", TableObject{2.29f, "Distance: "});
+    assert(textable.rowCount() == 8);
+    assert(textable.columnCount() == 5);
 
     std::cout << textable;
 
