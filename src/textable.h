@@ -45,8 +45,10 @@
 class Textable
 {
 public:
-    using RowNumber    = size_t;
-    using ColumnNumber = size_t;
+    using Row          = std::vector<std::string>;
+    using Table        = std::vector<Row>;
+    using RowNumber    = Row::size_type;
+    using ColumnNumber = Table::size_type;
 
     //! Sets a value to the cell referred by the given \p row and \p column.
     /*!
@@ -125,9 +127,6 @@ private:
     /// Implements the base case for setColumn() variadic function template recursion.
     template <typename T>
     void setColumn(T);
-
-    using Row = std::vector<std::string>;
-    using Table = std::vector<Row>;
 
     Table m_table;
 };
