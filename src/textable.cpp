@@ -32,6 +32,11 @@
 static Textable::ColumnNumber s_currentColumn = {};
 static Textable::RowNumber s_currentRow = {};
 
+static std::string::size_type stringSize(const std::string &string)
+{
+    return std::mbstowcs(NULL, string.c_str(), string.size());
+}
+
 template<typename T>
 std::string toString(T && value)
 {
@@ -159,8 +164,8 @@ std::ostream &operator<<(std::ostream &os, const Textable &table)
     for (const auto &row : table.m_table) {
         for (auto c = 0U; c < row.size(); ++c) {
             assert(c < columnWidths.size());
-            static const auto offset = 2U;
-            const auto valueSize = row.at(c).size() + offset;
+            static const auto offset = Textable::ColumnNumber(2);
+            const auto valueSize = stringSize(row.at(c)) + offset;
             if (valueSize > columnWidths.at(c)) {
                 columnWidths.at(c) = valueSize;
             }
@@ -181,7 +186,7 @@ std::ostream &operator<<(std::ostream &os, const Textable &table)
         os << '|';
         for (auto c = 0U; c < table.columnCount(); ++c) {
             const auto &value = c < row.size() ? row.at(c) : std::string{};
-            const auto spaceCount = columnWidths.at(c) - value.size();
+            const auto spaceCount = columnWidths.at(c) - stringSize(value);
             const auto leftSpace = spaceCount / 2;
             const auto rightSpace = spaceCount - leftSpace;
             os << std::string(leftSpace , ' ') << value << std::string(rightSpace, ' ') << '|';

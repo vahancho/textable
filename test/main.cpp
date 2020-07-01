@@ -88,7 +88,7 @@ int main(int, char**)
     textable.setRow(2, std::vector<std::string>{ "first", "second", "third" });
     Test(textable.rowCount(), Textable::RowNumber(3), LOCATION);
 
-    std::vector<std::string> container{ "first", "second", "third" };
+    std::vector<std::string> container{ u8"Fünf", u8"Двадцать пять", u8"Հայաստան" };
     textable.setRow(3, std::move(container));
     Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
 
