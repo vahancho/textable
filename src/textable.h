@@ -70,7 +70,7 @@ public:
             Textable textable;
             textable.setRow(1, std::vector<std::string>{ "first", "second", "third" });
     */
-    template<typename T, typename U = std::decay_t<decltype(*begin(std::declval<T>()))>>
+    template<typename T, typename U = typename std::decay_t<decltype(*begin(std::declval<T>()))>>
     void setRow(RowNumber row, T && rowData);
 
     //! Populates a row with values of arbitrary types.
@@ -95,7 +95,7 @@ public:
             Textable textable;
             textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
     */
-    template<typename T, typename U = std::decay_t<decltype(*begin(std::declval<T>()))>>
+    template<typename T, typename U = typename std::decay_t<decltype(*begin(std::declval<T>()))>>
     void setColumn(ColumnNumber column, T && columnData);
 
     //! Populates a column with values of arbitrary types.

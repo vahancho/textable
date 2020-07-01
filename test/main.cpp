@@ -79,44 +79,44 @@ int main(int, char**)
     textable.setCell(0, 0, 1);
     textable.setCell(0, 1, 1.2);
     textable.setCell(0, 2, "Cell text");
-    Test(textable.rowCount(), 1U, LOCATION);
-    Test(textable.columnCount(), 3U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(1), LOCATION);
+    Test(textable.columnCount(), Textable::ColumnNumber(3), LOCATION);
 
     textable.setRow(1, std::vector<int>{ 0, 1, 2 });
-    Test(textable.rowCount(), 2U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(2), LOCATION);
 
     textable.setRow(2, std::vector<std::string>{ "first", "second", "third" });
-    Test(textable.rowCount(), 3U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(3), LOCATION);
 
     std::vector<std::string> container{ "first", "second", "third" };
     textable.setRow(3, std::move(container));
-    Test(textable.rowCount(), 4U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
 
     textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
-    Test(textable.rowCount(), 4U, LOCATION);
-    Test(textable.columnCount(), 4U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
+    Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
 
     textable.setCell(4, 1, "A Single Value");
-    Test(textable.rowCount(), 5U, LOCATION);
-    Test(textable.columnCount(), 4U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(5), LOCATION);
+    Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
 
     textable.setRow(5, std::vector<bool>{ true, false });
-    Test(textable.rowCount(), 6U, LOCATION);
-    Test(textable.columnCount(), 4U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(6), LOCATION);
+    Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
 
     textable.setRow(6, std::vector<TableObject>{ {1.80f, "height: "},
                                                  {1.234f, "price: "},
                                                  {5.4321f, "length: "} });
-    Test(textable.rowCount(), 7U, LOCATION);
-    Test(textable.columnCount(), 4U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(7), LOCATION);
+    Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
 
     textable.setRow(7, 1, 2.2f, 3.3, "four", TableObject{ 12.29f, "Distance: " });
-    Test(textable.rowCount(), 8U, LOCATION);
-    Test(textable.columnCount(), 5U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(8), LOCATION);
+    Test(textable.columnCount(), Textable::ColumnNumber(5), LOCATION);
 
     textable.setColumn(4, 1, 2.2f, 3.3, 4.4, "five", TableObject{2.29f, "Distance: "});
-    Test(textable.rowCount(), 8U, LOCATION);
-    Test(textable.columnCount(), 5U, LOCATION);
+    Test(textable.rowCount(), Textable::RowNumber(8), LOCATION);
+    Test(textable.columnCount(), Textable::ColumnNumber(5), LOCATION);
 
     std::cout << textable;
 
