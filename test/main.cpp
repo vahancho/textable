@@ -25,6 +25,8 @@
 #include "textable.h"
 #include "textable.cpp"
 
+#include <clocale>
+
 #define STRINGIFY_HELPER(x) #x
 #define STRINGIFY(x) STRINGIFY_HELPER(x)
 
@@ -74,6 +76,9 @@ std::ostream &operator<<(std::ostream &os, const TableObject &table)
 
 int main(int, char**)
 {
+    // This is required to properly handle the multibyte string sizes.
+    std::setlocale(LC_ALL, "en_US.utf8");
+
     Textable textable;
 
     textable.setCell(0, 0, 1);
