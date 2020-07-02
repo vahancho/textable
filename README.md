@@ -12,12 +12,13 @@ The process of the text table generation is simple and intuitive (see examples b
 
 ## Features
 
-- An intuitive API to build a tables
-- Support for integer, floating point, character and custom data types
+- An intuitive API to build tables and manage their data
+- Ability to add not only string cell values, but values of any type,
 - Optimized table cell values storage
+- Supports Unicode strings
 - *C++11* support
 
-## Installation
+## Integration
 
 No installation required. Just compile */src/textable.h(.cpp)* in your project and use `Textable` class.
 
@@ -26,22 +27,30 @@ No installation required. Just compile */src/textable.h(.cpp)* in your project a
 No special requirements except *C++11* compliant compiler. The class is tested with *gcc 4.8.4* and *MSVC 15.0* (Visual Studio 2017).
 For more details see the CI badges (*Travis CI & AppVeyor CI*).
 
+### Unicode Strings
+
+In order to properly handle Unicode content all input strings must be UTF-8 encoded. The client should set a proper locale too. For example: ` std::setlocale(LC_ALL, "en_US.utf8");`.
+
 ## Generated Table Examples
 
 ```
-+-------------+----------------+----------------+-----+
-|      1      |      1.2       |   Cell text    |  0  |
-+-------------+----------------+----------------+-----+
-|      0      |       1        |       2        | 1.1 |
-+-------------+----------------+----------------+-----+
-|    first    |     second     |     third      | 2.2 |
-+-------------+----------------+----------------+-----+
-|             | A Single Value |                |     |
-+-------------+----------------+----------------+-----+
-|    true     |     false      |                |     |
-+-------------+----------------+----------------+-----+
-| height: 1.8 |  price: 1.234  | length: 5.4321 |     |
-+-------------+----------------+----------------+-----+
++-------------+----------------+----------------+------+
+|      1      |      1.2       |   Cell text    |  0   |
++-------------+----------------+----------------+------+
+|      0      |       1        |       2        | 1.1  |
++-------------+----------------+----------------+------+
+|    first    |     second     |     third      | 2.2  |
++-------------+----------------+----------------+------+
+|    Fünf     | Двадцать пять  |    Հայաստան    |      |
++-------------+----------------+----------------+------+
+|             | A Single Value |                |      |
++-------------+----------------+----------------+------+
+|    true     |     false      |                |      |
++-------------+----------------+----------------+------+
+| height: 1.8 |  price: 1.234  | length: 5.4321 |      |
++-------------+----------------+----------------+------+
+|      1      |      2.2       |      3.3       | four |
++-------------+----------------+----------------+------+
 ```
 
 ## API Usage Examples:
