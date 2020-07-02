@@ -27,7 +27,6 @@
 #include <algorithm>
 #include <sstream>
 #include <cassert>
-#include <tuple>
 
 static Textable::ColumnNumber s_currentColumn = {};
 static Textable::RowNumber s_currentRow = {};
