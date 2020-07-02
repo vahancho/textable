@@ -32,9 +32,22 @@
 static Textable::ColumnNumber s_currentColumn = {};
 static Textable::RowNumber s_currentRow = {};
 
-static std::string::size_type stringSize(const std::string &string)
+/// Returns the real number of string characters.
+/*!
+    In cases when string stores multi byte characters, std::string::size() function
+    will return the number of *bytes*, not characters.
+*/
+static size_t stringSize(const std::string &string)
 {
+#if defined (_MSC_VER)
+    size_t size = 0;
+    if (mbstowcs_s(&size, NULL, 0, string.c_str(), 0) == 0) {
+        size--; // Consider the null-terminator too.
+    }
+    return size;
+#else
     return std::mbstowcs(NULL, string.c_str(), string.size());
+#endif
 }
 
 template<typename T>
