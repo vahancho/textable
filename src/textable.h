@@ -41,6 +41,9 @@
     character stream.
 
     No special requirements except C++11 compliant compiler.
+    In order to properly handle Unicode content all input strings must be UTF-8
+    encoded. The client should set a proper locale too. For example:
+    'std::setlocale(LC_ALL, "en_US.utf8");'.
 */
 class Textable
 {

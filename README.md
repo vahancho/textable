@@ -29,7 +29,7 @@ For more details see the CI badges (*Travis CI & AppVeyor CI*).
 
 ### Unicode Strings
 
-In order to properly handle Unicode content all input strings must be UTF-8 encoded. The client should set a proper locale too. For example: ` std::setlocale(LC_ALL, "en_US.utf8");`.
+In order to properly handle Unicode content all input strings must be UTF-8 encoded. The client should set a proper locale too. For example: `std::setlocale(LC_ALL, "en_US.utf8");`.
 
 ## Generated Table Examples
 
