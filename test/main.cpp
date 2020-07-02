@@ -81,23 +81,23 @@ int main(int, char**)
 
     Textable textable;
 
-    textable.setCell(0, 0, 1);
-    textable.setCell(0, 1, 1.2);
-    textable.setCell(0, 2, "Cell text");
+    textable.setCell(0, 0, "Title");
+    textable.setCell(0, 1, "Column 1");
+    textable.setCell(0, 2, "Column 2");
     Test(textable.rowCount(), Textable::RowNumber(1), LOCATION);
     Test(textable.columnCount(), Textable::ColumnNumber(3), LOCATION);
 
-    textable.setRow(1, std::vector<int>{ 0, 1, 2 });
+    textable.setRow(1, "Numbers", std::vector<int>{ 1, 2 });
     Test(textable.rowCount(), Textable::RowNumber(2), LOCATION);
 
-    textable.setRow(2, std::vector<std::string>{ "first", "second", "third" });
+    textable.setRow(2, std::vector<std::string>{ "Mixed", "first", "second" });
     Test(textable.rowCount(), Textable::RowNumber(3), LOCATION);
 
-    std::vector<std::string> container{ u8"Fünf", u8"Двадцать пять", u8"Հայաստան" };
+    std::vector<std::string> container{ "Unicode", u8"Fünf", u8"Двадцать пять", u8"Հայաստան" };
     textable.setRow(3, std::move(container));
     Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
 
-    textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
+    textable.setColumn(3, "Column 3", std::vector<double>{ 0.0, 1.1 });
     Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
     Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
 
@@ -119,7 +119,7 @@ int main(int, char**)
     Test(textable.rowCount(), Textable::RowNumber(8), LOCATION);
     Test(textable.columnCount(), Textable::ColumnNumber(5), LOCATION);
 
-    textable.setColumn(4, 1, 2.2f, 3.3, 4.4, "five", TableObject{2.29f, "Distance: "});
+    textable.setColumn(4, "Column 4", 2.2f, 3.3, 4.4, "five", TableObject{2.29f, "Distance: "});
     Test(textable.rowCount(), Textable::RowNumber(8), LOCATION);
     Test(textable.columnCount(), Textable::ColumnNumber(5), LOCATION);
 
