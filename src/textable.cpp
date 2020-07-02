@@ -96,7 +96,13 @@ void Textable::setRow(RowNumber row, T && rowData)
         newRow.emplace_back(toString(value));
     }
 
-    m_table.at(row) = newRow;
+    if (s_currentColumn == 0) {
+        m_table.at(row) = newRow;
+    } else {
+        auto &currentRow = m_table.at(row);
+        currentRow.reserve(currentRow.size() + newRow.size());
+        currentRow.insert(currentRow.end(), newRow.begin(), newRow.end());
+    }
 }
 
 template <typename T>
@@ -140,13 +146,14 @@ void Textable::setColumn(ColumnNumber column, T && columnData)
         m_table.resize(columnData.size());
     }
 
-    for (decltype(columnData.size()) c = 0; c < columnData.size(); ++c) {
-        auto &row = m_table.at(c);
+    for (decltype(columnData.size()) r = 0; r < columnData.size(); ++r) {
+        const auto insertionRow = s_currentRow + r;
+        auto &row = m_table.at(insertionRow);
         if (column + 1 > row.size()) {
             row.resize(column + 1);
         }
 
-        row.at(column) = toString(columnData.at(c));
+        row.at(column) = toString(columnData.at(r));
     }
 }
 
