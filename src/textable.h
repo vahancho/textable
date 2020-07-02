@@ -120,6 +120,13 @@ public:
     //! Returns the number of columns of the table.
     ColumnNumber columnCount() const;
 
+    //! Returns a cell value (string) that corresponds to the given \p row and \p column.
+    /*!
+        \returns Returns a cell value (string) that corresponds to the given row and column or
+                 an empty string if row or column are out or range.
+    */
+    std::string cellValue(RowNumber row, ColumnNumber column) const;
+
     friend std::ostream &operator<<(std::ostream &os, const Textable &table);
 
 private:

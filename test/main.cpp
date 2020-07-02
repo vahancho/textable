@@ -52,10 +52,13 @@ template<typename T>
 void Test(T && actual, T && expected, std::string && location)
 {
     if (compare(std::forward<T>(expected), std::forward<T>(actual))) {
-        std::cout << "OK:"     << '\t' << expected << " and " << actual << " are equal" << '\n';
+        std::cout << "OK:"     << '\t' << '\'' << expected << '\'' << " and "
+                                       << '\'' << actual   << '\'' << " are equal" << '\n';
     } else {
-        std::cout << "FAILED:" << '\t' << "Expected " << expected << " but got " << actual
+        std::cout << "FAILED:" << '\t' << "Expected " << '\'' << expected << '\'' << " but got "
+                                                      << '\'' << actual   << '\''
                   << " : " << location << '\n';
+        exit(1);
     }
 }
 
@@ -86,6 +89,10 @@ int main(int, char**)
     textable.setCell(0, 2, "Column 2");
     Test(textable.rowCount(), Textable::RowNumber(1), LOCATION);
     Test(textable.columnCount(), Textable::ColumnNumber(3), LOCATION);
+    Test(textable.cellValue(0, 0), std::string("Title"), LOCATION);
+    Test(textable.cellValue(0, 1), std::string("Column 1"), LOCATION);
+    Test(textable.cellValue(0, 2), std::string("Column 2"), LOCATION);
+    Test(textable.cellValue(0, 3), std::string{}, LOCATION);
 
     textable.setRow(1, "Numbers", std::vector<int>{ 1, 2 });
     Test(textable.rowCount(), Textable::RowNumber(2), LOCATION);
@@ -96,6 +103,7 @@ int main(int, char**)
     std::vector<std::string> container{ "Unicode", u8"Fünf", u8"Двадцать пять", u8"Հայաստան" };
     textable.setRow(3, std::move(container));
     Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
+    Test(textable.cellValue(3, 2), std::string{u8"Двадцать пять"}, LOCATION);
 
     textable.setColumn(3, "Column 3", std::vector<double>{ 0.0, 1.1 });
     Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
@@ -114,6 +122,7 @@ int main(int, char**)
                                                  {5.4321f, "length: "} });
     Test(textable.rowCount(), Textable::RowNumber(7), LOCATION);
     Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
+    Test(textable.cellValue(6, 0), std::string{"height: 1.8"}, LOCATION);
 
     textable.setRow(7, 1, 2.2f, 3.3, "four", TableObject{ 12.29f, "Distance: " });
     Test(textable.rowCount(), Textable::RowNumber(8), LOCATION);

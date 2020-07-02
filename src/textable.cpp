@@ -171,6 +171,17 @@ Textable::ColumnNumber Textable::columnCount() const
                             })->size();
 }
 
+std::string Textable::cellValue(RowNumber row, ColumnNumber column) const
+{
+    if (row < rowCount()) {
+        const auto &rowObj = m_table.at(row);
+        if (column < rowObj.size()) {
+            return rowObj.at(column);
+        }
+    }
+    return {};
+}
+
 std::ostream &operator<<(std::ostream &os, const Textable &table)
 {
     if (table.rowCount() == 0) {
