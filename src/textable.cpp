@@ -143,7 +143,7 @@ template<typename T, typename U>
 void Textable::setColumn(ColumnNumber column, T && columnData)
 {
     if (columnData.size() > rowCount()) {
-        m_table.resize(columnData.size());
+        m_table.resize(columnData.size() + s_currentRow);
     }
 
     for (decltype(columnData.size()) r = 0; r < columnData.size(); ++r) {
