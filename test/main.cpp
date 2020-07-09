@@ -42,13 +42,6 @@ std::ostream &operator<<(std::ostream &os, const TableObject &table)
     return os;
 }
 
-static std::string toString2(const Textable &table)
-{
-    std::ostringstream stream;
-    stream << table;
-    return stream.str();
-}
-
 TEST(General, AddCell)
 {
     Textable textable;
