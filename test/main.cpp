@@ -26,41 +26,7 @@
 #include "textable.cpp"
 
 #include <clocale>
-
-#define STRINGIFY_HELPER(x) #x
-#define STRINGIFY(x) STRINGIFY_HELPER(x)
-
-#define LOCATION std::string(__FILE__ ":" STRINGIFY(__LINE__))
-
-template<typename T,
-         typename std::enable_if <!std::is_floating_point<T>{}, int>::type = 0>
-bool compare(T && actual, T && expected)
-{
-    return actual == expected;
-}
-
-template<typename T,
-         typename std::enable_if <std::is_floating_point<T>{}, int>::type = 0>
-bool compare(T && actual, T && expected)
-{
-    static const T epsilon = 0.000001;
-    // A simple comparison of floating point numbers.
-    return std::abs(expected - actual) < epsilon;
-}
-
-template<typename T>
-void Test(T && actual, T && expected, std::string && location)
-{
-    if (compare(std::forward<T>(expected), std::forward<T>(actual))) {
-        std::cout << "OK:"     << '\t' << '\'' << expected << '\'' << " and "
-                                       << '\'' << actual   << '\'' << " are equal" << '\n';
-    } else {
-        std::cout << "FAILED:" << '\t' << "Expected " << '\'' << expected << '\'' << " but got "
-                                                      << '\'' << actual   << '\''
-                  << " : " << location << '\n';
-        exit(1);
-    }
-}
+#include <gtest/gtest.h>
 
 struct TableObject
 {
@@ -76,63 +42,124 @@ std::ostream &operator<<(std::ostream &os, const TableObject &table)
     return os;
 }
 
-
-int main(int, char**)
+TEST(General, AddCell)
 {
-    // This is required to properly handle the multibyte string sizes.
-    std::setlocale(LC_ALL, "en_US.utf8");
-
     Textable textable;
 
     textable.setCell(0, 0, "Title");
     textable.setCell(0, 1, "Column 1");
     textable.setCell(0, 2, "Column 2");
-    Test(textable.rowCount(), Textable::RowNumber(1), LOCATION);
-    Test(textable.columnCount(), Textable::ColumnNumber(3), LOCATION);
-    Test(textable.cellValue(0, 0), std::string("Title"), LOCATION);
-    Test(textable.cellValue(0, 1), std::string("Column 1"), LOCATION);
-    Test(textable.cellValue(0, 2), std::string("Column 2"), LOCATION);
-    Test(textable.cellValue(0, 3), std::string{}, LOCATION);
+    EXPECT_EQ(textable.rowCount(), 1);
+    EXPECT_EQ(textable.columnCount(), 3);
+    EXPECT_EQ(textable.cellValue(0, 0), "Title");
+    EXPECT_EQ(textable.cellValue(0, 1), "Column 1");
+    EXPECT_EQ(textable.cellValue(0, 2), "Column 2");
+    EXPECT_EQ(textable.cellValue(0, 3), std::string{});
+}
 
+TEST(General, SetRowMixed)
+{
+    Textable textable;
     textable.setRow(1, "Numbers", std::vector<int>{ 1, 2 });
-    Test(textable.rowCount(), Textable::RowNumber(2), LOCATION);
+    EXPECT_EQ(textable.rowCount(), 2);
+    EXPECT_EQ(textable.columnCount(), 3);
+    EXPECT_EQ(textable.cellValue(1, 0), "Numbers");
+    EXPECT_EQ(textable.cellValue(1, 1), "1");
+    EXPECT_EQ(textable.cellValue(1, 2), "2");
+}
 
+TEST(General, SetRowStrings)
+{
+    Textable textable;
     textable.setRow(2, std::vector<std::string>{ "Mixed", "first", "second" });
-    Test(textable.rowCount(), Textable::RowNumber(3), LOCATION);
+    EXPECT_EQ(textable.rowCount(), 3);
+    EXPECT_EQ(textable.columnCount(), 3);
+    EXPECT_EQ(textable.cellValue(2, 0), "Mixed");
+    EXPECT_EQ(textable.cellValue(2, 1), "first");
+    EXPECT_EQ(textable.cellValue(2, 2), "second");
+}
 
+TEST(General, SetRowUnicode)
+{
+    Textable textable;
     std::vector<std::string> container{ "Unicode", u8"Fünf", u8"Двадцать пять", u8"Հայաստան" };
     textable.setRow(3, std::move(container));
-    Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
-    Test(textable.cellValue(3, 2), std::string{u8"Двадцать пять"}, LOCATION);
+    EXPECT_EQ(textable.rowCount(), 4);
+    EXPECT_EQ(textable.columnCount(), 4);
+    EXPECT_EQ(textable.cellValue(3, 2), u8"Двадцать пять");
+    EXPECT_EQ(textable.cellValue(3, 3), u8"Հայաստան");
+    EXPECT_EQ(textable.cellValue(3, 1), u8"Fünf");
+    EXPECT_EQ(textable.cellValue(3, 0), "Unicode");
+}
 
+TEST(General, SetColumnMixedFloating)
+{
+    Textable textable;
     textable.setColumn(3, "Column 3", std::vector<double>{ 0.0, 1.1 });
-    Test(textable.rowCount(), Textable::RowNumber(4), LOCATION);
-    Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
+    EXPECT_EQ(textable.rowCount(), 3);
+    EXPECT_EQ(textable.columnCount(), 4);
+    EXPECT_EQ(textable.cellValue(0, 3), "Column 3");
+    EXPECT_EQ(textable.cellValue(1, 3), "0");
+    EXPECT_EQ(textable.cellValue(2, 3), "1.1");
+}
 
+TEST(General, SingleCell)
+{
+    Textable textable;
     textable.setCell(4, 1, "A Single Value");
-    Test(textable.rowCount(), Textable::RowNumber(5), LOCATION);
-    Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
+    EXPECT_EQ(textable.rowCount(), 5);
+    EXPECT_EQ(textable.columnCount(), 2);
+    EXPECT_EQ(textable.cellValue(4, 1), "A Single Value");
+}
 
-    textable.setRow(5, std::vector<bool>{ true, false });
-    Test(textable.rowCount(), Textable::RowNumber(6), LOCATION);
-    Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
+TEST(General, BoleanValues)
+{
+    Textable textable;
+    textable.setRow(0, std::vector<bool>{ true, false });
+    EXPECT_EQ(textable.rowCount(), 1);
+    EXPECT_EQ(textable.columnCount(), 2);
+    EXPECT_EQ(textable.cellValue(0, 0), "true");
+    EXPECT_EQ(textable.cellValue(0, 1), "false");
+}
 
-    textable.setRow(6, std::vector<TableObject>{ {1.80f, "height: "},
-                                                 {1.234f, "price: "},
-                                                 {5.4321f, "length: "} });
-    Test(textable.rowCount(), Textable::RowNumber(7), LOCATION);
-    Test(textable.columnCount(), Textable::ColumnNumber(4), LOCATION);
-    Test(textable.cellValue(6, 0), std::string{"height: 1.8"}, LOCATION);
+TEST(General, CustomObjectValues)
+{
+    Textable textable;
+    textable.setRow(1, std::vector<TableObject>{ { 1.80f, "height: " },
+                                                 { 1.234f, "price: " },
+                                                 { 5.4321f, "length: " } });
+    EXPECT_EQ(textable.rowCount(), 2);
+    EXPECT_EQ(textable.columnCount(), 3);
+    EXPECT_EQ(textable.cellValue(1, 0), "height: 1.8");
+    EXPECT_EQ(textable.cellValue(1, 1), "price: 1.234");
+    EXPECT_EQ(textable.cellValue(1, 2), "length: 5.4321");
+}
 
-    textable.setRow(7, 1, 2.2f, 3.3, "four", TableObject{ 12.29f, "Distance: " });
-    Test(textable.rowCount(), Textable::RowNumber(8), LOCATION);
-    Test(textable.columnCount(), Textable::ColumnNumber(5), LOCATION);
+TEST(General, MixedCustomObjectValues)
+{
+    Textable textable;
+    textable.setRow(0, 1, 2.2f, 3.3, "four", TableObject{ 12.29f, "Distance: " });
+    EXPECT_EQ(textable.rowCount(), 1);
+    EXPECT_EQ(textable.columnCount(), 5);
+    EXPECT_EQ(textable.cellValue(0, 0), "1");
+    EXPECT_EQ(textable.cellValue(0, 1), "2.2");
+    EXPECT_EQ(textable.cellValue(0, 2), "3.3");
+    EXPECT_EQ(textable.cellValue(0, 3), "four");
+    EXPECT_EQ(textable.cellValue(0, 4), "Distance: 12.29");
+}
 
-    textable.setColumn(4, "Column 4", 2.2f, 3.3, 4.4, "five", TableObject{2.29f, "Distance: "});
-    Test(textable.rowCount(), Textable::RowNumber(8), LOCATION);
-    Test(textable.columnCount(), Textable::ColumnNumber(5), LOCATION);
+TEST(General, EmptyTable)
+{
+    Textable textable;
+    EXPECT_EQ(textable.rowCount(), 0);
+    EXPECT_EQ(textable.columnCount(), 0);
+}
 
-    std::cout << textable;
+int main(int argc, char**argv)
+{
+    // This is required to properly handle the multi-byte string sizes.
+    std::setlocale(LC_ALL, "en_US.utf8");
 
-    return 0;
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
