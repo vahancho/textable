@@ -164,11 +164,11 @@ Textable::RowNumber Textable::rowCount() const
 
 Textable::ColumnNumber Textable::columnCount() const
 {
-    // Return the longest row size.
-    return std::max_element(m_table.begin(), m_table.end(),
-                            [](const Row &rowLeft, const Row &rowRight) {
-                                return rowLeft.size() < rowRight.size();
-                            })->size();
+    auto longestRow = std::max_element(m_table.cbegin(), m_table.cend(),
+                                       [](const Row &rowLeft, const Row &rowRight) {
+                                           return rowLeft.size() < rowRight.size();
+                                       });
+    return longestRow != m_table.cend() ? longestRow->size() : Textable::ColumnNumber{};
 }
 
 std::string Textable::cellValue(RowNumber row, ColumnNumber column) const
