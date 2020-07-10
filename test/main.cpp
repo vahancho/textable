@@ -107,7 +107,20 @@ TEST(General, SetRowUnicode)
     EXPECT_EQ(textable.cellValue(3, 1), u8"Fünf");
     EXPECT_EQ(textable.cellValue(3, 0), "Unicode");
 
-    /// TODO: Add a test for Unicode output.
+    std::cout << textable << '\n';
+
+    /// TODO: The following test doesn't work correctly on Windows.
+#if !defined (_MSC_VER)
+    EXPECT_EQ(toString(textable), u8"+---------+-------+--------------+----------+\n"
+                                    "|         |       |              |          |\n"
+                                    "+---------+-------+--------------+----------+\n"
+                                    "|         |       |              |          |\n"
+                                    "+---------+-------+--------------+----------+\n"
+                                    "|         |       |              |          |\n"
+                                    "+---------+-------+--------------+----------+\n"
+                                    "| Unicode | Fünf | Двадцать пять | Հայաստան |\n"
+                                    "+---------+-------+--------------+----------+\n");
+#endif
 }
 
 TEST(General, SetColumnMixedFloating)
