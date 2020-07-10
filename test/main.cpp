@@ -96,7 +96,6 @@ TEST(General, SetRowStrings)
 
 TEST(General, SetRowUnicode)
 {
-    std::setlocale(LC_ALL, "en_US.utf8");
     Textable textable;
     std::vector<std::string> container{ "Unicode", u8"Fünf", u8"Двадцать пять", u8"Հայաստան" };
     textable.setRow(3, std::move(container));
@@ -109,8 +108,6 @@ TEST(General, SetRowUnicode)
 
     std::cout << textable << '\n';
 
-    /// TODO: The following test doesn't work correctly on Windows.
-#if !defined (_MSC_VER)
     EXPECT_EQ(toString(textable), u8"+---------+------+---------------+----------+\n"
                                     "|         |      |               |          |\n"
                                     "+---------+------+---------------+----------+\n"
@@ -120,7 +117,6 @@ TEST(General, SetRowUnicode)
                                     "+---------+------+---------------+----------+\n"
                                     "| Unicode | Fünf | Двадцать пять | Հայաստան |\n"
                                     "+---------+------+---------------+----------+\n");
-#endif
 }
 
 TEST(General, SetColumnMixedFloating)

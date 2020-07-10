@@ -4,6 +4,15 @@ project(textable)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# By default, Visual Studio detects a byte-order mark to determine if the source
+# file is in an encoded Unicode format, for example, UTF-16 or UTF-8. If no
+# byte-order mark is found, it assumes the source file is encoded using the
+# current user code page, unless you've specified a code page by using /utf-8
+if (MSVC)
+    # Instruct Visual Studio to use proper char set for both source and binary files.
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+endif()
+
 add_library(textable
   src/textable.h
   src/textable.cpp
