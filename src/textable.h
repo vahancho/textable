@@ -29,6 +29,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <string>
 #include <vector>
 
 //! Implements a textual table abstraction.
