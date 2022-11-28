@@ -39,10 +39,8 @@ build_script:
     - nmake install
 
     # Configure CMake to find the GTest.
-    - set CMAKE_PREFIX_PATH=C:\projects\textable\build\googletest\build
-
     - cd C:\projects\textable\build
-    - cmake .. -G "NMake Makefiles"
+    - cmake .. -G "NMake Makefiles" -DCMAKE_PREFIX_PATH=C:\projects\textable\build\googletest\build -DENABLE_TESTING=True
     - nmake
 
 test_script:
