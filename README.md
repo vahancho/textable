@@ -1,5 +1,6 @@
 # A plain text tables generator
 
+[![Latest release](https://img.shields.io/github/v/release/vahancho/textable?include_prereleases)](https://github.com/vahancho/textable/releases)
 [![Build and test (CMake)](https://github.com/vahancho/textable/actions/workflows/cmake.yml/badge.svg)](https://github.com/vahancho/textable/actions/workflows/cmake.yml)
 [![Build status](https://ci.appveyor.com/api/projects/status/dey9nhcsubmtaq0g?svg=true)](https://ci.appveyor.com/project/vahancho/textable)
 [![codecov](https://codecov.io/gh/vahancho/textable/branch/master/graph/badge.svg)](https://codecov.io/gh/vahancho/textable)
