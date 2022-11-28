@@ -45,4 +45,4 @@ build_script:
 
 test_script:
     - cd C:\projects\textable\build
-    - textable_test
+    - ctest -C $(configuration) --verbose
