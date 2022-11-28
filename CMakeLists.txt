@@ -1,8 +1,44 @@
+#**********************************************************************************
+#  MIT License                                                                    *
+#                                                                                 *
+#  Copyright (c) 2022 Vahan Aghajanyan <vahancho@gmail.com>                       *
+#                                                                                 *
+#  Permission is hereby granted, free of charge, to any person obtaining a copy   *
+#  of this software and associated documentation files (the "Software"), to deal  *
+#  in the Software without restriction, including without limitation the rights   *
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      *
+#  copies of the Software, and to permit persons to whom the Software is          *
+#  furnished to do so, subject to the following conditions:                       *
+#                                                                                 *
+#  The above copyright notice and this permission notice shall be included in all *
+#  copies or substantial portions of the Software.                                *
+#                                                                                 *
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     *
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       *
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    *
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         *
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  *
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  *
+#  SOFTWARE.                                                                      *
+#*********************************************************************************/
+
 cmake_minimum_required(VERSION 3.9)
 
-project(textable)
-set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+project(textable VERSION 1.1.0
+        DESCRIPTION "A C++ implementation of a plain text tables generator."
+        LANGUAGES CXX)
+
+# Make cache variables for install destinations
+include(GNUInstallDirs)
+
+# General options
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+option(ENABLE_TESTING "Enable unit test build" OFF)
 
 # By default, Visual Studio detects a byte-order mark to determine if the source
 # file is in an encoded Unicode format, for example, UTF-16 or UTF-8. If no
@@ -13,46 +49,55 @@ if (MSVC)
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
-add_library(textable
-  src/textable.h
-  src/textable.cpp
-)
+if (NOT MSVC)
+    # Specify the target architecture (Linux). For Windows based generator use rather
+    # '-A Win32' or '-A x64 options'
+    set(TARGET_ARCH x86 CACHE STRING "the target architecture")
+    set_property(CACHE TARGET_ARCH PROPERTY STRINGS x86 x64)
 
-add_executable(textable_test
-  test/main.cpp
-)
+    if (TARGET_ARCH STREQUAL "x86")
+        set(CMAKE_C_FLAGS   -m32)
+        set(CMAKE_CXX_FLAGS -m32)
+    elseif(TARGET_ARCH STREQUAL "x64")
+        set(CMAKE_C_FLAGS   -m64)
+        set(CMAKE_CXX_FLAGS -m64)
+    else()
+        message(FATAL_ERROR "Incorrect target architecture specified. "
+                            "It should be either x86 or x64")
+    endif()
 
-# Includes
-target_include_directories(textable_test PRIVATE src)
+    # Get the architecture: x86 vs x64
+    if(TARGET_ARCH STREQUAL "x64")
+        set(BIT "x86_64")
+    else()
+        set(BIT "x86")
+    endif()
 
-enable_testing()
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+else()
+    # By default, Visual Studio detects a byte-order mark to determine if the source
+    # file is in an encoded Unicode format, for example, UTF-16 or UTF-8. If no
+    # byte-order mark is found, it assumes the source file is encoded using the
+    # current user code page, unless you've specified a code page by using /utf-8
 
-find_package(GTest CONFIG REQUIRED)
-target_link_libraries(textable_test PRIVATE textable GTest::gtest)
-
-add_test(NAME Test COMMAND textable_test)
-
-# Copy GTest libraries to the target directory.
-add_custom_command(
-    TARGET textable_test POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:GTest::gtest>
-        $<TARGET_FILE_DIR:textable_test>
-)
-
-# Coverage support.
-option(CODE_COVERAGE "Enable coverage reporting" ON)
-if (CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  # Add required flags (GCC & LLVM/Clang)
-  target_compile_options(textable INTERFACE
-    -O0        # no optimization
-    -g         # generate debug info
-    --coverage # sets all required flags
-  )
-  if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
-    target_link_options(textable INTERFACE --coverage)
-  else()
-    target_link_libraries(textable INTERFACE --coverage)
-  endif()
+    # Instruct Visual Studio to use proper char set for both source and binary files.
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
+# Append a postfix for the debug libraries
+if (NOT CMAKE_DEBUG_POSTFIX)
+    set(CMAKE_DEBUG_POSTFIX d)
+endif()
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+add_subdirectory(src)
+
+if (ENABLE_TESTING)
+    enable_testing()
+    include(Dart)
+
+    add_subdirectory(test)
+endif()
