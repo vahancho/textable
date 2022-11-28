@@ -1,14 +1,19 @@
 # A plain text tables generator
 
-[![Build Status](https://travis-ci.org/vahancho/textable.svg?branch=master)](https://travis-ci.org/vahancho/textable)
+[![Build and test (CMake)](https://github.com/vahancho/textable/actions/workflows/cmake.yml/badge.svg)](https://github.com/vahancho/textable/actions/workflows/cmake.yml)
 [![Build status](https://ci.appveyor.com/api/projects/status/dey9nhcsubmtaq0g?svg=true)](https://ci.appveyor.com/project/vahancho/textable)
 [![codecov](https://codecov.io/gh/vahancho/textable/branch/master/graph/badge.svg)](https://codecov.io/gh/vahancho/textable)
 
-A C++ implementation of a plain text tables generator. The name *Textable* originates from the combination of two words *Text* and *Table*.
+A C++ implementation of a plain text tables generator. The name *Textable* originates
+from the combination of two words *Text* and *Table*.
 
 ## Overview
 
-The process of the text table generation is simple and intuitive (see examples below). You create an instance of the `Textable` class and populate it with your data. You may add data in any order you want - `Textable` will handle it. By default all cell content is center aligned. A table can be output to a character stream.
+The process of the text table generation is simple and intuitive (see examples below).
+You create an instance of the `Textable` class and populate it with your data.
+You may add data in any order you want - `Textable` will handle it.
+By default all cell content is center aligned. A table can be output to a character stream or
+converted to a string with `Textable::toString()` function.
 
 ## Features
 
@@ -18,18 +23,41 @@ The process of the text table generation is simple and intuitive (see examples b
 - Supports Unicode strings
 - *C++11* support
 
-## Integration
+## Installation
 
-No installation required. Just compile */src/textable.h(.cpp)* in your project and use `Textable` class.
+Basically there is installation required - just compile */src/textable.h(.cpp)* in
+your project and use `Textable` class.
+
+### Integration with CMake projects
+
+However, if you use `CMake` and want to integrate the library into your project you
+might want to install it first by invoking a `CMake` command from the build directory:
+
+```
+cmake --install . --prefix=<install_path>
+```
+
+Once the library is installed you can use it from in your project by adjusting the
+corresponding `CMake` script. For example:
+
+```
+[..]
+find_package(textable REQUIRED)
+
+add_executable(example main.cpp)
+target_link_libraries(example textable)
+[..]
+```
 
 ## Prerequisites
 
-No special requirements except *C++11* compliant compiler. The class is tested with *gcc 4.8.4* and *MSVC 15.0* (Visual Studio 2017).
-For more details see the CI badges (*Travis CI & AppVeyor CI*).
+No special requirements except *C++11* compliant compiler. The class is tested latest
+Ubuntu and Windows versions. For more details see the CI badges (*AppVeyor CI and GitHub actions*).
 
 ### Unicode Strings
 
-In order to properly handle Unicode content all input strings must be UTF-8 encoded. The client should set a proper locale too. For example: `std::setlocale(LC_ALL, "en_US.utf8");`.
+In order to properly handle Unicode content all input strings must be UTF-8 encoded.
+The client should set a proper locale too. For example: `std::setlocale(LC_ALL, "en_US.utf8");`.
 
 ## Generated Table Examples
 
@@ -111,35 +139,37 @@ textable.setCell(0, 2, "Cell text");
 std::cout << textable;
 ```
 
-## Test
+## Building and testing
 
-There are unit tests provided for `Textable` class. You can find them in the *test/* directory.
-To run them you have to build and run the test application. For doing that you must invoke the following
-commands from the terminal, assuming that compiler and environment are already configured and you are in the source directory:
+There are unit tests provided for the `Textable` class. You can find them in the *test/* directory.
+To run them you have to build and run the test application (`ENABLE_TESTING` CMake flag set to `True`).
+Please note that unit tests depend from `GTest`. Therefore it should be also present.
 
-##### Linux (gcc + cmake)
+To build things you should invoke the following commands from the terminal,
+assuming that the compiler and the environment are already configured and you are in the source directory:
 
-```
-mkdir build
-cd build
-cmake ..
-make
-./textable_test
-```
-
-##### Linux (gcc)
+### Linux (gcc + `CMake`)
 
 ```
-g++ -std=c++11 -coverage -Isrc -Iinclude test/main.cpp -o textable_test
-./textable_test
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTING=True -DTARGET_ARCH=x64
+cmake --build . --config Release
+ctest
+```
+In order to build a debug version use `-DCMAKE_BUILD_TYPE=Debug` parameter.
+To build library for 32-bit architecture use `TARGET_ARCH=x86` option instead.
+
+### Windows
+
+```
+mkdir build && cd build
+cmake .. -DCMAKE_PREFIX_PATH=C:\build\googletest\build -DENABLE_TESTING=True -A x64
+cmake --build . --config Release
+ctest -C Release
 ```
 
-##### Windows
+To build library for 32-bit architecture use `-A Win32` option instead.
 
-```
-mkdir build
-cd build
-cmake .. -G "NMake Makefiles"
-nmake
-textable_test
-```
+
+By default the script is configured to build a shared library. In order to build a static one use
+`BUILD_SHARED_LIBS` flag set to `False`.

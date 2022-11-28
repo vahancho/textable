@@ -100,3 +100,4 @@ jobs:
       with:
         verbose: true
         gcov: true
+        gcov_include: ${{github.workspace}}/src/textable.*
