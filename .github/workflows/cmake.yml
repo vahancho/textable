@@ -67,7 +67,6 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cmake -B build_x86 -DENABLE_TESTING=True -DCMAKE_PREFIX_PATH=${{github.workspace}}\googletest\build -A Win32
         cmake -B build_x64 -DENABLE_TESTING=True -DCMAKE_PREFIX_PATH=${{github.workspace}}\googletest\build -A x64
 
     # Windows only
@@ -78,20 +77,12 @@ jobs:
       # Build your program with the given configuration
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cmake --build build_x86 --config ${{env.BUILD_TYPE}}
         cmake --build build_x64 --config ${{env.BUILD_TYPE}}
 
     # Test non Windows
     - name: Test
       if: matrix.os != 'windows-latest'
       working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.
-      run: ctest -C ${{env.BUILD_TYPE}} --verbose
-
-    # Test x86 bit Windows
-    - name: Test_x86
-      if: matrix.os == 'windows-latest'
-      working-directory: ${{github.workspace}}/build_x86
       # Execute tests defined by the CMake configuration.
       run: ctest -C ${{env.BUILD_TYPE}} --verbose
 
