@@ -23,7 +23,6 @@
 ***********************************************************************************/
 
 #include "textable.h"
-#include "textable.cpp"
 
 #include <clocale>
 #include <gtest/gtest.h>
@@ -55,9 +54,9 @@ TEST(General, AddCell)
     EXPECT_EQ(textable.cellValue(0, 1), "Column 1");
     EXPECT_EQ(textable.cellValue(0, 2), "Column 2");
     EXPECT_EQ(textable.cellValue(0, 3), std::string{});
-    EXPECT_EQ(toString(textable), "+-------+----------+----------+\n"
-                                  "| Title | Column 1 | Column 2 |\n"
-                                  "+-------+----------+----------+\n");
+    EXPECT_EQ(textable.toString(), "+-------+----------+----------+\n"
+                                   "| Title | Column 1 | Column 2 |\n"
+                                   "+-------+----------+----------+\n");
 }
 
 TEST(General, SetRowMixed)
@@ -69,11 +68,11 @@ TEST(General, SetRowMixed)
     EXPECT_EQ(textable.cellValue(1, 0), "Numbers");
     EXPECT_EQ(textable.cellValue(1, 1), "1");
     EXPECT_EQ(textable.cellValue(1, 2), "2");
-    EXPECT_EQ(toString(textable), "+---------+---+---+\n"
-                                  "|         |   |   |\n"
-                                  "+---------+---+---+\n"
-                                  "| Numbers | 1 | 2 |\n"
-                                  "+---------+---+---+\n");
+    EXPECT_EQ(textable.toString(), "+---------+---+---+\n"
+                                   "|         |   |   |\n"
+                                   "+---------+---+---+\n"
+                                   "| Numbers | 1 | 2 |\n"
+                                   "+---------+---+---+\n");
 }
 
 TEST(General, SetRowStrings)
@@ -85,13 +84,13 @@ TEST(General, SetRowStrings)
     EXPECT_EQ(textable.cellValue(2, 0), "Mixed");
     EXPECT_EQ(textable.cellValue(2, 1), "first");
     EXPECT_EQ(textable.cellValue(2, 2), "second");
-    EXPECT_EQ(toString(textable), "+-------+-------+--------+\n"
-                                  "|       |       |        |\n"
-                                  "+-------+-------+--------+\n"
-                                  "|       |       |        |\n"
-                                  "+-------+-------+--------+\n"
-                                  "| Mixed | first | second |\n"
-                                  "+-------+-------+--------+\n");
+    EXPECT_EQ(textable.toString(), "+-------+-------+--------+\n"
+                                   "|       |       |        |\n"
+                                   "+-------+-------+--------+\n"
+                                   "|       |       |        |\n"
+                                   "+-------+-------+--------+\n"
+                                   "| Mixed | first | second |\n"
+                                   "+-------+-------+--------+\n");
 }
 
 TEST(General, SetRowUnicode)
@@ -118,7 +117,7 @@ TEST(General, SetRowUnicode)
     std::cout << "Expected table:\n" << expected;
     std::cout << "\nActual table:\n" << textable << '\n';
 
-    EXPECT_EQ(toString(textable), expected);
+    EXPECT_EQ(textable.toString(), expected);
 }
 
 TEST(General, SetColumnMixedFloating)
@@ -130,13 +129,13 @@ TEST(General, SetColumnMixedFloating)
     EXPECT_EQ(textable.cellValue(0, 3), "Column 3");
     EXPECT_EQ(textable.cellValue(1, 3), "0");
     EXPECT_EQ(textable.cellValue(2, 3), "1.1");
-    EXPECT_EQ(toString(textable), "+--+--+--+----------+\n"
-                                  "|  |  |  | Column 3 |\n"
-                                  "+--+--+--+----------+\n"
-                                  "|  |  |  |    0     |\n"
-                                  "+--+--+--+----------+\n"
-                                  "|  |  |  |   1.1    |\n"
-                                  "+--+--+--+----------+\n");
+    EXPECT_EQ(textable.toString(), "+--+--+--+----------+\n"
+                                   "|  |  |  | Column 3 |\n"
+                                   "+--+--+--+----------+\n"
+                                   "|  |  |  |    0     |\n"
+                                   "+--+--+--+----------+\n"
+                                   "|  |  |  |   1.1    |\n"
+                                   "+--+--+--+----------+\n");
 }
 
 TEST(General, SingleCell)
@@ -146,17 +145,17 @@ TEST(General, SingleCell)
     EXPECT_EQ(textable.rowCount(), 5);
     EXPECT_EQ(textable.columnCount(), 2);
     EXPECT_EQ(textable.cellValue(4, 1), "A Single Value");
-    EXPECT_EQ(toString(textable), "+--+----------------+\n"
-                                  "|  |                |\n"
-                                  "+--+----------------+\n"
-                                  "|  |                |\n"
-                                  "+--+----------------+\n"
-                                  "|  |                |\n"
-                                  "+--+----------------+\n"
-                                  "|  |                |\n"
-                                  "+--+----------------+\n"
-                                  "|  | A Single Value |\n"
-                                  "+--+----------------+\n");
+    EXPECT_EQ(textable.toString(), "+--+----------------+\n"
+                                   "|  |                |\n"
+                                   "+--+----------------+\n"
+                                   "|  |                |\n"
+                                   "+--+----------------+\n"
+                                   "|  |                |\n"
+                                   "+--+----------------+\n"
+                                   "|  |                |\n"
+                                   "+--+----------------+\n"
+                                   "|  | A Single Value |\n"
+                                   "+--+----------------+\n");
 }
 
 TEST(General, BoleanValues)
@@ -167,9 +166,9 @@ TEST(General, BoleanValues)
     EXPECT_EQ(textable.columnCount(), 2);
     EXPECT_EQ(textable.cellValue(0, 0), "true");
     EXPECT_EQ(textable.cellValue(0, 1), "false");
-    EXPECT_EQ(toString(textable), "+------+-------+\n"
-                                  "| true | false |\n"
-                                  "+------+-------+\n");
+    EXPECT_EQ(textable.toString(), "+------+-------+\n"
+                                   "| true | false |\n"
+                                   "+------+-------+\n");
 }
 
 TEST(General, CustomObjectValues)
@@ -183,11 +182,11 @@ TEST(General, CustomObjectValues)
     EXPECT_EQ(textable.cellValue(1, 0), "height: 1.8");
     EXPECT_EQ(textable.cellValue(1, 1), "price: 1.234");
     EXPECT_EQ(textable.cellValue(1, 2), "length: 5.4321");
-    EXPECT_EQ(toString(textable), "+-------------+--------------+----------------+\n"
-                                  "|             |              |                |\n"
-                                  "+-------------+--------------+----------------+\n"
-                                  "| height: 1.8 | price: 1.234 | length: 5.4321 |\n"
-                                  "+-------------+--------------+----------------+\n");
+    EXPECT_EQ(textable.toString(), "+-------------+--------------+----------------+\n"
+                                   "|             |              |                |\n"
+                                   "+-------------+--------------+----------------+\n"
+                                   "| height: 1.8 | price: 1.234 | length: 5.4321 |\n"
+                                   "+-------------+--------------+----------------+\n");
 }
 
 TEST(General, MixedCustomObjectValues)
@@ -201,9 +200,9 @@ TEST(General, MixedCustomObjectValues)
     EXPECT_EQ(textable.cellValue(0, 2), "3.3");
     EXPECT_EQ(textable.cellValue(0, 3), "four");
     EXPECT_EQ(textable.cellValue(0, 4), "Distance: 12.29");
-    EXPECT_EQ(toString(textable), "+---+-----+-----+------+-----------------+\n"
-                                  "| 1 | 2.2 | 3.3 | four | Distance: 12.29 |\n"
-                                  "+---+-----+-----+------+-----------------+\n");
+    EXPECT_EQ(textable.toString(), "+---+-----+-----+------+-----------------+\n"
+                                   "| 1 | 2.2 | 3.3 | four | Distance: 12.29 |\n"
+                                   "+---+-----+-----+------+-----------------+\n");
 }
 
 TEST(General, EmptyTable)
@@ -211,7 +210,7 @@ TEST(General, EmptyTable)
     Textable textable;
     EXPECT_EQ(textable.rowCount(), 0);
     EXPECT_EQ(textable.columnCount(), 0);
-    EXPECT_EQ(toString(textable), "");
+    EXPECT_EQ(textable.toString(), "");
 }
 
 int main(int argc, char**argv)
