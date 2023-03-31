@@ -55,12 +55,12 @@ Textable::ColumnNumber Textable::columnCount() const
     return longestRow != m_table.cend() ? longestRow->size() : Textable::ColumnNumber{};
 }
 
-std::string Textable::cellValue(RowNumber row, ColumnNumber column) const
+std::string Textable::cellData(RowNumber row, ColumnNumber column) const
 {
     if (row < rowCount()) {
         const auto &rowObj = m_table.at(row);
         if (column < rowObj.size()) {
-            return rowObj.at(column);
+            return rowObj.at(column).m_data;
         }
     }
     return {};
