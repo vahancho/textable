@@ -6,28 +6,42 @@
 [![codecov](https://codecov.io/gh/vahancho/textable/branch/master/graph/badge.svg)](https://codecov.io/gh/vahancho/textable)
 
 A C++ implementation of a plain text tables generator. The name *Textable* originates
-from the combination of two words *Text* and *Table*.
+from the combination of two words *Text* and *Table*: `Text + Table = Textable`.
+
+```
++---------+---------+---------+
+| Column0 | Column1 | Column2 |
++---------+---------+---------+
+|0        |1        |2        |
++---------+---------+---------+
+|        0|        1|        2|
++---------+---------+---------+
+|    0    |    1    |    2    |
++---------+---------+---------+
+```
 
 ## Overview
 
 The process of the text table generation is simple and intuitive (see examples below).
 You create an instance of the `Textable` class and populate it with your data.
 You may add data in any order you want - `Textable` will handle it.
-By default all cell content is center aligned. A table can be output to a character stream or
-converted to a string with `Textable::toString()` function.
+The cell content should be specified along with the alignment. A table can be output
+to a character stream or converted to a string with `Textable::toString()` function.
 
 ## Features
 
 - An intuitive API to build tables and manage their data
-- Ability to add not only string cell values, but values of any type,
+- Ability to add not only string cell values, but values of any type (convertible to string),
 - Optimized table cell values storage
+- Text alignment support: `Left`, `Right` and `Center`
 - Supports Unicode strings
 - *C++11* support
 
 ## Installation
 
 Basically there is installation required - just compile */src/textable.h(.cpp)* in
-your project and use `Textable` class.
+your project and use `Textable` class. Otherwise create and use a CMake generated
+installation package.
 
 ### Integration with CMake projects
 
@@ -78,7 +92,7 @@ The client should set a proper locale too. For example: `std::setlocale(LC_ALL, 
 +-------------+----------------+----------------+------+
 | height: 1.8 |  price: 1.234  | length: 5.4321 |      |
 +-------------+----------------+----------------+------+
-|      1      |      2.2       |      3.3       | four |
+|Left         |           Right|      Center    | four |
 +-------------+----------------+----------------+------+
 ```
 
@@ -87,25 +101,25 @@ The client should set a proper locale too. For example: `std::setlocale(LC_ALL, 
 To add a single row with three cells:
 ```cpp
 Textable textable;
-textable.setCell(0, 0, 1);
-textable.setCell(0, 1, 1.2);
-textable.setCell(0, 2, "Cell text");
+textable.setCell(0, 0, Textable::Align::Left, 1);
+textable.setCell(0, 1, Textable::Align::Right, 1.2);
+textable.setCell(0, 2, Textable::Align::Center, "Cell text");
 ```
 
 To add a single rows in one go:
 ```cpp
 Textable textable;
-textable.setRow(0, std::vector<int>{ 0, 1, 2 });
-textable.setRow(1, std::vector<std::string>{ "first", "second", "third" });
-textable.setRow(2, 1, 2.2f, 3.3, "Five days");
+textable.setRow(0, Textable::Align::Center, std::vector<int>{ 0, 1, 2 });
+textable.setRow(1, Textable::Align::Center, std::vector<std::string>{ "first", "second", "third" });
+textable.setRow(2, Textable::Align::Center, 1, 2.2f, 3.3, "Five days");
 ```
 
 To set a column values in one go
 ```cpp
 Textable textable;
-textable.setColumn(3, std::vector<double>{ 0.0, 1.1, 2.2 });
-textable.setColumn(4, std::vector<bool>{ true, false });
-textable.setColumn(5, 11, 2.22, 3.0f, "Apple");
+textable.setColumn(3, Textable::Align::Left, std::vector<double>{ 0.0, 1.1, 2.2 });
+textable.setColumn(4, Textable::Align::Left, std::vector<bool>{ true, false });
+textable.setColumn(5, Textable::Align::Left, 11, 2.22, 3.0f, "Apple");
 ```
 
 Usage of a custom type as a cell data
@@ -127,15 +141,16 @@ std::ostream &operator<<(std::ostream &os, const TableObject &table)
 [..]
 
 Textable textable;
-textable.setRow(0, std::vector<TableObject>{ {1.80f, "height: "}, {1.234f, "price: "}, {5.4321f, "length: "} });
+textable.setRow(0, Textable::Align::Center,
+                std::vector<TableObject>{ {1.80f, "height: "}, {1.234f, "price: "}, {5.4321f, "length: "} });
 ```
 
 Export a table
 ```cpp
 Textable textable;
-textable.setCell(0, 0, 1);
-textable.setCell(0, 1, 1.2);
-textable.setCell(0, 2, "Cell text");
+textable.setCell(0, 0, Textable::Align::Center, 1);
+textable.setCell(0, 1, Textable::Align::Center, 1.2);
+textable.setCell(0, 2, Textable::Align::Center, "Cell text");
 
 std::cout << textable;
 ```
