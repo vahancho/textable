@@ -45,15 +45,15 @@ TEST(General, AddCell)
 {
     Textable textable;
 
-    textable.setCell(0, 0, "Title");
-    textable.setCell(0, 1, "Column 1");
-    textable.setCell(0, 2, "Column 2");
+    textable.setCell(0, 0, Textable::Align::Center, "Title");
+    textable.setCell(0, 1, Textable::Align::Center, "Column 1");
+    textable.setCell(0, 2, Textable::Align::Center, "Column 2");
     EXPECT_EQ(textable.rowCount(), 1);
     EXPECT_EQ(textable.columnCount(), 3);
-    EXPECT_EQ(textable.cellValue(0, 0), "Title");
-    EXPECT_EQ(textable.cellValue(0, 1), "Column 1");
-    EXPECT_EQ(textable.cellValue(0, 2), "Column 2");
-    EXPECT_EQ(textable.cellValue(0, 3), std::string{});
+    EXPECT_EQ(textable.cellData(0, 0), "Title");
+    EXPECT_EQ(textable.cellData(0, 1), "Column 1");
+    EXPECT_EQ(textable.cellData(0, 2), "Column 2");
+    EXPECT_EQ(textable.cellData(0, 3), std::string{});
     EXPECT_EQ(textable.toString(), "+-------+----------+----------+\n"
                                    "| Title | Column 1 | Column 2 |\n"
                                    "+-------+----------+----------+\n");
@@ -62,12 +62,12 @@ TEST(General, AddCell)
 TEST(General, SetRowMixed)
 {
     Textable textable;
-    textable.setRow(1, "Numbers", std::vector<int>{ 1, 2 });
+    textable.setRow(1, Textable::Align::Center, "Numbers", std::vector<int>{ 1, 2 });
     EXPECT_EQ(textable.rowCount(), 2);
     EXPECT_EQ(textable.columnCount(), 3);
-    EXPECT_EQ(textable.cellValue(1, 0), "Numbers");
-    EXPECT_EQ(textable.cellValue(1, 1), "1");
-    EXPECT_EQ(textable.cellValue(1, 2), "2");
+    EXPECT_EQ(textable.cellData(1, 0), "Numbers");
+    EXPECT_EQ(textable.cellData(1, 1), "1");
+    EXPECT_EQ(textable.cellData(1, 2), "2");
     EXPECT_EQ(textable.toString(), "+---------+---+---+\n"
                                    "|         |   |   |\n"
                                    "+---------+---+---+\n"
@@ -78,12 +78,12 @@ TEST(General, SetRowMixed)
 TEST(General, SetRowStrings)
 {
     Textable textable;
-    textable.setRow(2, std::vector<std::string>{ "Mixed", "first", "second" });
+    textable.setRow(2, Textable::Align::Center, std::vector<std::string>{ "Mixed", "first", "second" });
     EXPECT_EQ(textable.rowCount(), 3);
     EXPECT_EQ(textable.columnCount(), 3);
-    EXPECT_EQ(textable.cellValue(2, 0), "Mixed");
-    EXPECT_EQ(textable.cellValue(2, 1), "first");
-    EXPECT_EQ(textable.cellValue(2, 2), "second");
+    EXPECT_EQ(textable.cellData(2, 0), "Mixed");
+    EXPECT_EQ(textable.cellData(2, 1), "first");
+    EXPECT_EQ(textable.cellData(2, 2), "second");
     EXPECT_EQ(textable.toString(), "+-------+-------+--------+\n"
                                    "|       |       |        |\n"
                                    "+-------+-------+--------+\n"
@@ -97,13 +97,13 @@ TEST(General, SetRowUnicode)
 {
     Textable textable;
     std::vector<std::string> container{ "Unicode", u8"Fünf", u8"Двадцать пять", u8"Հայաստան" };
-    textable.setRow(3, std::move(container));
+    textable.setRow(3, Textable::Align::Center, std::move(container));
     EXPECT_EQ(textable.rowCount(), 4);
     EXPECT_EQ(textable.columnCount(), 4);
-    EXPECT_EQ(textable.cellValue(3, 2), u8"Двадцать пять");
-    EXPECT_EQ(textable.cellValue(3, 3), u8"Հայաստան");
-    EXPECT_EQ(textable.cellValue(3, 1), u8"Fünf");
-    EXPECT_EQ(textable.cellValue(3, 0), "Unicode");
+    EXPECT_EQ(textable.cellData(3, 2), u8"Двадцать пять");
+    EXPECT_EQ(textable.cellData(3, 3), u8"Հայաստան");
+    EXPECT_EQ(textable.cellData(3, 1), u8"Fünf");
+    EXPECT_EQ(textable.cellData(3, 0), "Unicode");
 
     std::string expected("+---------+------+---------------+----------+\n"
                          "|         |      |               |          |\n"
@@ -123,12 +123,12 @@ TEST(General, SetRowUnicode)
 TEST(General, SetColumnMixedFloating)
 {
     Textable textable;
-    textable.setColumn(3, "Column 3", std::vector<double>{ 0.0, 1.1 });
+    textable.setColumn(3, Textable::Align::Center, "Column 3", std::vector<double>{ 0.0, 1.1 });
     EXPECT_EQ(textable.rowCount(), 3);
     EXPECT_EQ(textable.columnCount(), 4);
-    EXPECT_EQ(textable.cellValue(0, 3), "Column 3");
-    EXPECT_EQ(textable.cellValue(1, 3), "0");
-    EXPECT_EQ(textable.cellValue(2, 3), "1.1");
+    EXPECT_EQ(textable.cellData(0, 3), "Column 3");
+    EXPECT_EQ(textable.cellData(1, 3), "0");
+    EXPECT_EQ(textable.cellData(2, 3), "1.1");
     EXPECT_EQ(textable.toString(), "+--+--+--+----------+\n"
                                    "|  |  |  | Column 3 |\n"
                                    "+--+--+--+----------+\n"
@@ -141,10 +141,10 @@ TEST(General, SetColumnMixedFloating)
 TEST(General, SingleCell)
 {
     Textable textable;
-    textable.setCell(4, 1, "A Single Value");
+    textable.setCell(4, 1, Textable::Align::Center, "A Single Value");
     EXPECT_EQ(textable.rowCount(), 5);
     EXPECT_EQ(textable.columnCount(), 2);
-    EXPECT_EQ(textable.cellValue(4, 1), "A Single Value");
+    EXPECT_EQ(textable.cellData(4, 1), "A Single Value");
     EXPECT_EQ(textable.toString(), "+--+----------------+\n"
                                    "|  |                |\n"
                                    "+--+----------------+\n"
@@ -161,11 +161,11 @@ TEST(General, SingleCell)
 TEST(General, BoleanValues)
 {
     Textable textable;
-    textable.setRow(0, std::vector<bool>{ true, false });
+    textable.setRow(0, Textable::Align::Center, std::vector<bool>{ true, false });
     EXPECT_EQ(textable.rowCount(), 1);
     EXPECT_EQ(textable.columnCount(), 2);
-    EXPECT_EQ(textable.cellValue(0, 0), "true");
-    EXPECT_EQ(textable.cellValue(0, 1), "false");
+    EXPECT_EQ(textable.cellData(0, 0), "true");
+    EXPECT_EQ(textable.cellData(0, 1), "false");
     EXPECT_EQ(textable.toString(), "+------+-------+\n"
                                    "| true | false |\n"
                                    "+------+-------+\n");
@@ -174,14 +174,15 @@ TEST(General, BoleanValues)
 TEST(General, CustomObjectValues)
 {
     Textable textable;
-    textable.setRow(1, std::vector<TableObject>{ { 1.80f, "height: " },
-                                                 { 1.234f, "price: " },
-                                                 { 5.4321f, "length: " } });
+    textable.setRow(1, Textable::Align::Center,
+                    std::vector<TableObject>{ { 1.80f, "height: " },
+                                              { 1.234f, "price: " },
+                                              { 5.4321f, "length: " } });
     EXPECT_EQ(textable.rowCount(), 2);
     EXPECT_EQ(textable.columnCount(), 3);
-    EXPECT_EQ(textable.cellValue(1, 0), "height: 1.8");
-    EXPECT_EQ(textable.cellValue(1, 1), "price: 1.234");
-    EXPECT_EQ(textable.cellValue(1, 2), "length: 5.4321");
+    EXPECT_EQ(textable.cellData(1, 0), "height: 1.8");
+    EXPECT_EQ(textable.cellData(1, 1), "price: 1.234");
+    EXPECT_EQ(textable.cellData(1, 2), "length: 5.4321");
     EXPECT_EQ(textable.toString(), "+-------------+--------------+----------------+\n"
                                    "|             |              |                |\n"
                                    "+-------------+--------------+----------------+\n"
@@ -192,14 +193,14 @@ TEST(General, CustomObjectValues)
 TEST(General, MixedCustomObjectValues)
 {
     Textable textable;
-    textable.setRow(0, 1, 2.2f, 3.3, "four", TableObject{ 12.29f, "Distance: " });
+    textable.setRow(0, Textable::Align::Center, 1, 2.2f, 3.3, "four", TableObject{ 12.29f, "Distance: " });
     EXPECT_EQ(textable.rowCount(), 1);
     EXPECT_EQ(textable.columnCount(), 5);
-    EXPECT_EQ(textable.cellValue(0, 0), "1");
-    EXPECT_EQ(textable.cellValue(0, 1), "2.2");
-    EXPECT_EQ(textable.cellValue(0, 2), "3.3");
-    EXPECT_EQ(textable.cellValue(0, 3), "four");
-    EXPECT_EQ(textable.cellValue(0, 4), "Distance: 12.29");
+    EXPECT_EQ(textable.cellData(0, 0), "1");
+    EXPECT_EQ(textable.cellData(0, 1), "2.2");
+    EXPECT_EQ(textable.cellData(0, 2), "3.3");
+    EXPECT_EQ(textable.cellData(0, 3), "four");
+    EXPECT_EQ(textable.cellData(0, 4), "Distance: 12.29");
     EXPECT_EQ(textable.toString(), "+---+-----+-----+------+-----------------+\n"
                                    "| 1 | 2.2 | 3.3 | four | Distance: 12.29 |\n"
                                    "+---+-----+-----+------+-----------------+\n");
