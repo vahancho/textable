@@ -225,7 +225,7 @@ void Textable::setCell(RowNumber row, ColumnNumber column, Align align, T && val
 
 // The specialization for Textable::Row data. We don't need to perform values conversion.
 template<>
-inline void Textable::setRow(RowNumber row, Align align, Textable::Row && rowData)
+inline void Textable::setRow(RowNumber row, Align /*align*/, Textable::Row && rowData)
 {
     if (row + 1 > rowCount()) {
         m_table.resize(row + 1);
