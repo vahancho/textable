@@ -53,7 +53,32 @@
 class TEXTABLE_EXPORT Textable
 {
 public:
-    using Row          = std::vector<std::string>;
+    /// The alignment flag specifies the cell text alignment
+    enum class Align
+    {
+        Left,  ///< Align left
+        Right, ///< Align right
+        Center ///< Align center
+    };
+
+    /// Defines the cell data container.
+    /*!
+        Basically we store the data string itself along with the alignment flag
+        for the given cell.
+    */
+    struct CellData
+    {
+        CellData() = default;
+        CellData(const std::string &data, Align align = Align::Center)
+            :
+                m_data(data),
+                m_align(align)
+        {}
+        std::string m_data;
+        Align m_align{Align::Center};
+    };
+
+    using Row          = std::vector<CellData>;
     using Table        = std::vector<Row>;
     using RowNumber    = Row::size_type;
     using ColumnNumber = Table::size_type;
