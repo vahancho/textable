@@ -214,6 +214,35 @@ TEST(General, EmptyTable)
     EXPECT_EQ(textable.toString(), "");
 }
 
+TEST(General, Alignment)
+{
+    Textable textable;
+
+    textable.setRow(0, Textable::Align::Center, "Column0", "Column1", "Column2");
+    textable.setCell(1, 0, Textable::Align::Left, "0");
+    textable.setCell(1, 1, Textable::Align::Right, "1");
+    textable.setCell(1, 2, Textable::Align::Center, "2");
+    textable.setRow(2, Textable::Align::Left, "0", "1", "2");
+    textable.setRow(3, Textable::Align::Right, "0", "1", "2");
+    textable.setRow(4, Textable::Align::Center, "0", "1", "2");
+
+    std::string expected("+---------+---------+---------+\n"
+                         "| Column0 | Column1 | Column2 |\n"
+                         "+---------+---------+---------+\n"
+                         "|0        |        1|    2    |\n"
+                         "+---------+---------+---------+\n"
+                         "|0        |1        |2        |\n"
+                         "+---------+---------+---------+\n"
+                         "|        0|        1|        2|\n"
+                         "+---------+---------+---------+\n"
+                         "|    0    |    1    |    2    |\n"
+                         "+---------+---------+---------+\n");
+    std::cout << "Expected table:\n" << expected;
+    std::cout << "\nActual table:\n" << textable << '\n';
+
+    EXPECT_EQ(textable.toString(), expected);
+}
+
 int main(int argc, char**argv)
 {
     // This is required to properly handle the multi-byte string sizes.
